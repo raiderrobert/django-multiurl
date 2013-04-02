@@ -15,8 +15,8 @@ However, if you try this, ``/app/san-francisco/`` will only map to
 help: you only get a 404 in the browser because Django stops resolving
 URLs at the first match.
 
-Well, ``django-multiurl`` solves this problem. Just ``pip install django-
-multiurl``, then do this::
+Well, ``django-multiurl`` solves this problem. Just 
+``pip install django-multiurl``, then do this::
 
     from multiurl import multiurl
 
