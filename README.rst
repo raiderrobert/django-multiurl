@@ -1,6 +1,9 @@
 django-multiurl
 ===============
 
+.. image:: https://secure.travis-ci.org/jacobian/django-multiurl.png?branch=master
+   :target: http://travis-ci.org/jacobian/django-multiurl
+
 Have you ever wanted multiple views to match to the same URL? Now you can.
 
 You may once have tried something like this::
