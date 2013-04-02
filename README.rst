@@ -67,8 +67,8 @@ A few notes to round things out:
   "continuing" exception), a 404 will be raised instead. That is, if resolving
   "falls off the end" of some multi-urls, you'll get the 404 you expect.
 
-* Reverse URL resolution just works as expected. Name your sub-URLs (e.g.
-  the ``url``s passed to ``multiurl``) and then reverse your heart out.
+* Reverse URL resolution just works as expected. Name your sub-URLs and then
+  reverse your heart out.
 
 Contributing
 ------------
