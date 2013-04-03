@@ -22,6 +22,7 @@ class MultiRegexURLResolver(urlresolvers.RegexURLResolver):
     def resolve(self, path):
         tried = []
         matched = []
+        patterns_matched = []
 
         # This is a simplified version of RegexURLResolver. It doesn't
         # support a regex prefix, and it doesn't need to handle include(),
@@ -33,15 +34,18 @@ class MultiRegexURLResolver(urlresolvers.RegexURLResolver):
                 # first match, build up a list of all matches.
                 rm = urlresolvers.ResolverMatch(sub_match.func, sub_match.args, sub_match.kwargs, sub_match.url_name)
                 matched.append(rm)
+                patterns_matched.append([pattern])
             tried.append([pattern])
         if matched:
-            return MultiResolverMatch(matched, self._exceptions)
+            return MultiResolverMatch(matched, self._exceptions, patterns_matched, path)
         raise urlresolvers.Resolver404({'tried': tried, 'path': path})
 
 class MultiResolverMatch(object):
-    def __init__(self, matches, exceptions):
+    def __init__(self, matches, exceptions, patterns_matched, path):
         self.matches = matches
         self.exceptions = exceptions
+        self.patterns_matched = patterns_matched
+        self.path = path
 
         # Attributes to emulate ResolverMatch
         self.kwargs = {}
@@ -58,5 +62,5 @@ class MultiResolverMatch(object):
                     return match.func(request, *match.args, **match.kwargs)
                 except self.exceptions:
                     continue
-            raise urlresolvers.Resolver404()
+            raise urlresolvers.Resolver404({'tried': self.patterns_matched, 'path': self.path})
         return multiview
