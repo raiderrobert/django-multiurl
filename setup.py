@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name = 'django-multiurl',
-    version = '1.0',
+    version = '1.0.1',
     description = 'Allow multiple views to match the same URL.',
     license = 'BSD',
     long_description = read('README.rst'),
