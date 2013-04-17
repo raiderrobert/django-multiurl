@@ -63,4 +63,5 @@ class MultiResolverMatch(object):
                 except self.exceptions:
                     continue
             raise urlresolvers.Resolver404({'tried': self.patterns_matched, 'path': self.path})
+        multiview.multi_resolver_match = self
         return multiview
