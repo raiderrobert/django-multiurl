@@ -39,7 +39,7 @@ class MultiRegexURLResolver(urlresolvers.RegexURLResolver):
                 if sub_match:
                     # Here's the part that's different: instead of returning the
                     # first match, build up a list of all matches.
-                    rm = urlresolvers.ResolverMatch(sub_match.func, sub_match.args, sub_match.kwargs, sub_match.url_name)
+                    rm = urlresolvers.ResolverMatch(sub_match.func, sub_match.args, sub_match.kwargs, sub_match.url_name, self.app_name or sub_match.app_name, [self.namespace] + sub_match.namespaces)
                     matched.append(rm)
                     patterns_matched.append([pattern])
                 tried.append([pattern])
