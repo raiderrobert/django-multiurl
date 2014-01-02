@@ -49,7 +49,7 @@ class MultiResolverMatch(object):
 
         # Attributes to emulate ResolverMatch
         self.kwargs = {}
-        self.args = []
+        self.args = tuple()
         self.url_name = None
         self.app_name = None
         self.namespaces = []
