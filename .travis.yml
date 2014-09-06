@@ -4,6 +4,8 @@ python:
     - "2.7"
     - "3.2"
     - "3.3"
+    - "3.4"
+    - "pypy"
 env:
     - DJANGO_PACKAGE="Django>=1.5,<1.6"
     - DJANGO_PACKAGE=https://github.com/django/django/archive/master.zip
