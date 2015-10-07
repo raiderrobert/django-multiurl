@@ -4,3 +4,4 @@ htmlcov
 dist/
 *.egg-info/
 .tox/
+.idea/
