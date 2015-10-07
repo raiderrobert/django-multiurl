@@ -1,7 +1,7 @@
 django-multiurl
 ===============
 
-`This repo is archived <https://github.com/jacobian-archive/about/blob/master/README.md>`_,  and will no longer be maintained.
+
 ------------------------------------------------------------------------------------------------------------------------------
 
 .. image:: https://travis-ci.org/raiderrobert/django-multiurl.svg?branch=master
