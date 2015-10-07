@@ -4,8 +4,8 @@ django-multiurl
 `This repo is archived <https://github.com/jacobian-archive/about/blob/master/README.md>`_,  and will no longer be maintained.
 ------------------------------------------------------------------------------------------------------------------------------
 
-.. image:: https://secure.travis-ci.org/jacobian/django-multiurl.png?branch=master
-   :target: http://travis-ci.org/jacobian/django-multiurl
+.. image:: https://travis-ci.org/raiderrobert/django-multiurl.svg?branch=master
+   :target: https://travis-ci.org/raiderrobert/django-multiurl
 
 Have you ever wanted multiple views to match to the same URL? Now you can.
 
