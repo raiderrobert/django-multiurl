@@ -16,7 +16,7 @@ setup(
     author_email = 'jacob@jacobian.org',
 
     py_modules = ['multiurl'],
-    install_requires = ['django>=1.4'],
+    install_requires = ['django>=1.5'],
 
     classifiers = (
         'Development Status :: 4 - Beta',
@@ -26,7 +26,6 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
