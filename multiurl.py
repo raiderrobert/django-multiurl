@@ -49,8 +49,9 @@ class MultiResolverMatch(object):
 
         # Attributes to emulate ResolverMatch
         self.kwargs = {}
-        self.args = []
+        self.args = ()
         self.url_name = None
+        self.app_names = []
         self.app_name = None
         self.namespaces = []
 

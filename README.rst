@@ -11,10 +11,10 @@ Have you ever wanted multiple views to match to the same URL? Now you can.
 
 You may once have tried something like this::
 
-    urlpatterns = patterns('',
+    urlpatterns = [
         url('/app/(\w+)/$', app.views.people),
         url('/app/(\w+)/$', app.views.place),
-    )
+    ]
 
 However, if you try this, ``/app/san-francisco/`` will only map to
 ``app.views.people``. Raising an ``Http404`` from ``app.views.people`` doesn't
@@ -26,12 +26,12 @@ Well, ``django-multiurl`` solves this problem. Just
 
     from multiurl import multiurl
 
-    urlpatterns = patterns('',
+    urlpatterns = [
         multiurl(
             url('/app/(\w+)/$', app.views.people),
             url('/app/(\w+)/$', app.views.place),
         )
-    )
+    ]
 
 Now in your views, raise ``multiurl.ContinueResolving`` anywhere you'd like
 to break out of the view and keep resolving. For example, here's what
@@ -58,13 +58,13 @@ A few notes to round things out:
   considered "continue" statements. For example, to allow ``Http404``
   exceptions to continue resolving, do this::
 
-        urlpatterns = patterns('',
+        urlpatterns = [
             multiurl(
                 url('/app/(\w+)/$', app.views.people),
                 url('/app/(\w+)/$', app.views.place),
                 catch = (Http404, ContinueResolving)
             )
-        )
+        ]
 
   As you can see, ``catch`` should be a tuple of exceptions. It's probably a
   good idea to always include ``ContinueResolving`` in the tuple.
