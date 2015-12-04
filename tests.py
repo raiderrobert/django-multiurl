@@ -1,30 +1,30 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.core.urlresolvers import RegexURLResolver, Resolver404, NoReverseMatch
 from django.http import HttpResponse
-from django.utils import unittest
+import unittest
 from multiurl import multiurl, ContinueResolving
 
 class MultiviewTests(unittest.TestCase):
     def setUp(self):
         # Patterns with a "catch all" view (thing) at the end.
-        self.patterns_catchall = RegexURLResolver('^/', patterns('',
+        self.patterns_catchall = RegexURLResolver('^/', [
             multiurl(
                 url(r'^(\w+)/$', person, name='person'),
                 url(r'^(\w+)/$', place, name='place'),
                 url(r'^(\w+)/$', thing, name='thing'),
             )
-        ))
+        ])
 
         # Patterns with no "catch all" - last view could still raise ContinueResolving.
-        self.patterns_no_fallthrough = RegexURLResolver('^/', patterns('',
+        self.patterns_no_fallthrough = RegexURLResolver('^/', [
             multiurl(
                 url(r'^(\w+)/$', person, name='person'),
                 url(r'^(\w+)/$', place, name='place'),
             )
-        ))
+        ])
 
     def test_resolve_match_first(self):
         m = self.patterns_catchall.resolve('/jane/')
