@@ -6,14 +6,14 @@ def read(fname):
 
 setup(
     name = 'django-multiurl',
-    version = '1.0.1',
+    version = '1.1.0',
     description = 'Allow multiple views to match the same URL.',
     license = 'BSD',
     long_description = read('README.rst'),
     url = 'https://github.com/jacobian/django-multiurl',
 
-    author = 'Jacob Kaplan-Moss',
-    author_email = 'jacob@jacobian.org',
+    author = 'Jacob Kaplan-Moss and Robert Roskam',
+    author_email = 'raiderrobert@gmail.com',
 
     py_modules = ['multiurl'],
     install_requires = ['django>=1.5'],
