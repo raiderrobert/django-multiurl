@@ -10,7 +10,7 @@ setup(
     description = 'Allow multiple views to match the same URL.',
     license = 'BSD',
     long_description = read('README.rst'),
-    url = 'https://github.com/jacobian/django-multiurl',
+    url = 'https://github.com/raiderrober/django-multiurl',
 
     author = 'Jacob Kaplan-Moss and Robert Roskam',
     author_email = 'raiderrobert@gmail.com',
