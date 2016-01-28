@@ -1,24 +1,18 @@
-import os
-from setuptools import setup
-
-def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+from setuptools import setup, find_packages
 
 setup(
-    name = 'django-multiurl',
-    version = '1.1.0',
-    description = 'Allow multiple views to match the same URL.',
-    license = 'BSD',
-    long_description = read('README.rst'),
-    url = 'https://github.com/jacobian/django-multiurl',
-
-    author = 'Jacob Kaplan-Moss and Robert Roskam',
-    author_email = 'raiderrobert@gmail.com',
-
-    py_modules = ['multiurl'],
-    install_requires = ['django>=1.5'],
-
-    classifiers = (
+    name='django-multiurl',
+    py_modules=['multiurl'],
+    version='1.1.0',
+    description='Allow multiple views to match the same URL.',
+    license='BSD',
+    url='https://github.com/raiderrobert/django-multiurl',
+    download_url='https://github.com/raiderrobert/django-multiurl/tarball/v1.1.0',
+    author='Jacob Kaplan-Moss and Robert Roskam',
+    author_email='raiderrobert@gmail.com',
+    install_requires=['django>=1.5'],
+    keywords='django urls',
+    classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         'Framework :: Django',
@@ -29,5 +23,5 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
-    ),
+    ],
 )

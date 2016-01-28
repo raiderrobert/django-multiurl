@@ -1,11 +1,14 @@
 from __future__ import unicode_literals
 
+import unittest
+
 from django.conf import settings
 from django.conf.urls import url
 from django.core.urlresolvers import RegexURLResolver, Resolver404, NoReverseMatch
 from django.http import HttpResponse
-import unittest
+
 from multiurl import multiurl, ContinueResolving
+
 
 class MultiviewTests(unittest.TestCase):
     def setUp(self):
