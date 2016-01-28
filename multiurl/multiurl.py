@@ -2,12 +2,15 @@ from __future__ import unicode_literals
 
 from django.core import urlresolvers
 
+
 class ContinueResolving(Exception):
     pass
+
 
 def multiurl(*urls, **kwargs):
     exceptions = kwargs.get('catch', (ContinueResolving,))
     return MultiRegexURLResolver(urls, exceptions)
+
 
 class MultiRegexURLResolver(urlresolvers.RegexURLResolver):
     def __init__(self, urls, exceptions):
@@ -39,6 +42,7 @@ class MultiRegexURLResolver(urlresolvers.RegexURLResolver):
         if matched:
             return MultiResolverMatch(matched, self._exceptions, patterns_matched, path)
         raise urlresolvers.Resolver404({'tried': tried, 'path': path})
+
 
 class MultiResolverMatch(object):
     def __init__(self, matches, exceptions, patterns_matched, path):
