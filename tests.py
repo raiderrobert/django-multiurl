@@ -7,8 +7,7 @@ from django.conf.urls import url
 from django.core.urlresolvers import RegexURLResolver, Resolver404, NoReverseMatch
 from django.http import HttpResponse
 
-import multiurl
-from multiurl import ContinueResolving
+from multiurl import multiurl, ContinueResolving
 
 
 class MultiviewTests(unittest.TestCase):
