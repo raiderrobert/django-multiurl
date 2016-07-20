@@ -3,7 +3,7 @@ python:
     - "2.7"
     - "3.4"
     - "3.5"
-    - "3.6.0a1"
+    - "nightly"
 install: "pip install -r requirements.txt"
 script: python tests.py
 sudo: false
