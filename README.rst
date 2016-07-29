@@ -1,11 +1,10 @@
+##########
 django-multiurl
-===============
-
-
-------------------------------------------------------------------------------------------------------------------------------
-
+##########
 .. image:: https://travis-ci.org/raiderrobert/django-multiurl.svg?branch=master
-   :target: https://travis-ci.org/raiderrobert/django-multiurl
+    :target: http://travis-ci.org/raiderrobert/django-multiurl
+.. image:: https://button.flattr.com/flattr-badge-large.png
+    :target: http://flattr.com/submit/auto?fid=y7ww7j&url=https%3A%2F%2Fgithub.com%2Fraiderrobert%2Fdjango-multiurl%2F
 
 Have you ever wanted multiple views to match to the same URL? Now you can.
 
