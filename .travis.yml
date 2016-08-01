@@ -1,12 +1,26 @@
 language: python
+
+sudo: false
+
+cache:pip
+
+env:
+  - DJANGO='https://github.com/django/django/archive/master.tar.gz'
+  - DJANGO='django>=1.9.0,<1.10.0'
+  - DJANGO='django>=1.8.0,<1.9.0'
+
 python:
     - "2.7"
     - "3.4"
     - "3.5"
     - "nightly"
-install: "pip install -r requirements.txt"
+
 script: python tests.py
-sudo: false
+
+install:
+  - travis_retry pip install $DJANGO
+  - travis_retry pip install coveralls
+  - travis_retry pip install -r requirements.txt
 
 after_success:
     - coveralls
