@@ -5,7 +5,7 @@ sudo: false
 cache: pip
 
 env:
-  - DJANGO='https://github.com/django/django/archive/master.tar.gz'
+  - DJANGO='django>=1.11.0,<2.0.0'
   - DJANGO='django>=1.10.0,<1.11.0'
   - DJANGO='django>=1.9.0,<1.10.0'
   - DJANGO='django>=1.8.0,<1.9.0'
