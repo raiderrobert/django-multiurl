@@ -40,7 +40,7 @@ class MultiRegexURLResolver(urlresolvers.RegexURLResolver):
                     matched.append(rm)
                     patterns_matched.append([pattern])
                 tried.append([pattern])
-        except Resolver404 as e:
+        except urlresolvers.Resolver404 as e:
             pass
         if matched:
             return MultiResolverMatch(matched, self._exceptions, patterns_matched, path)
