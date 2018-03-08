@@ -4,16 +4,28 @@ import unittest
 
 from django.conf import settings
 from django.conf.urls import url
-from django.core.urlresolvers import RegexURLResolver, Resolver404, NoReverseMatch
+
 from django.http import HttpResponse
 
 from multiurl import multiurl, ContinueResolving
+
+try:
+    from django import urls as urlresolvers
+    from django.urls.resolvers import RegexPattern
+except ImportError:
+    # Fallbacks and mocks for Django 1.*
+    from django.core import urlresolvers
+
+    urlresolvers.URLResolver = urlresolvers.RegexURLResolver
+
+    def RegexPattern(pattern):
+        return pattern
 
 
 class MultiviewTests(unittest.TestCase):
     def setUp(self):
         # Patterns with a "catch all" view (thing) at the end.
-        self.patterns_catchall = RegexURLResolver('^/', [
+        self.patterns_catchall = urlresolvers.URLResolver(RegexPattern(r'^/'), [
             multiurl(
                 url(r'^(\w+)/$', person, name='person'),
                 url(r'^(\w+)/$', place, name='place'),
@@ -22,7 +34,7 @@ class MultiviewTests(unittest.TestCase):
         ])
 
         # Patterns with no "catch all" - last view could still raise ContinueResolving.
-        self.patterns_no_fallthrough = RegexURLResolver('^/', [
+        self.patterns_no_fallthrough = urlresolvers.URLResolver(RegexPattern(r'^/'), [
             multiurl(
                 url(r'^(\w+)/$', person, name='person'),
                 url(r'^(\w+)/$', place, name='place'),
@@ -46,25 +58,26 @@ class MultiviewTests(unittest.TestCase):
 
     def test_resolve_match_faillthrough(self):
         m = self.patterns_no_fallthrough.resolve('/bacon/')
-        with self.assertRaises(Resolver404):
+        with self.assertRaises(urlresolvers.Resolver404):
             m.func(request=None, *m.args, **m.kwargs)
 
     def test_no_match(self):
-        with self.assertRaises(Resolver404):
+        with self.assertRaises(urlresolvers.Resolver404):
             self.patterns_catchall.resolve('/eggs/and/bacon/')
 
     def test_reverse(self):
         self.assertEqual('joe/', self.patterns_catchall.reverse('person', 'joe'))
         self.assertEqual('joe/', self.patterns_catchall.reverse('place', 'joe'))
         self.assertEqual('joe/', self.patterns_catchall.reverse('thing', 'joe'))
-        with self.assertRaises(NoReverseMatch):
+        with self.assertRaises(urlresolvers.NoReverseMatch):
             self.patterns_catchall.reverse('person')
-        with self.assertRaises(NoReverseMatch):
+        with self.assertRaises(urlresolvers.NoReverseMatch):
             self.patterns_catchall.reverse('argh', 'xyz')
 
 #
 # Some "views" to test against.
 #
+
 
 def person(request, name):
     people = {
@@ -75,6 +88,7 @@ def person(request, name):
         return HttpResponse("Person: " + people[name])
     raise ContinueResolving
 
+
 def place(request, name):
     places = {
         'sf': 'San Francisco',
@@ -84,8 +98,10 @@ def place(request, name):
         return HttpResponse("Place: " + places[name])
     raise ContinueResolving
 
+
 def thing(request, name):
     return HttpResponse("Thing: " + name.title())
+
 
 if __name__ == '__main__':
     settings.configure()

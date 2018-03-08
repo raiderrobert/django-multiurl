@@ -1,6 +1,16 @@
 from __future__ import unicode_literals
 
-from django.core import urlresolvers
+try:
+    from django import urls as urlresolvers
+    from django.urls.resolvers import RegexPattern
+except ImportError:
+    # Fallbacks and mocks for Django 1.*
+    from django.core import urlresolvers
+
+    urlresolvers.URLResolver = urlresolvers.RegexURLResolver
+
+    def RegexPattern(pattern):
+        return pattern
 
 
 class ContinueResolving(Exception):
@@ -12,9 +22,9 @@ def multiurl(*urls, **kwargs):
     return MultiRegexURLResolver(urls, exceptions)
 
 
-class MultiRegexURLResolver(urlresolvers.RegexURLResolver):
+class MultiRegexURLResolver(urlresolvers.URLResolver):
     def __init__(self, urls, exceptions):
-        super(MultiRegexURLResolver, self).__init__('', None)
+        super(MultiRegexURLResolver, self).__init__(RegexPattern(''), None)
         self._urls = urls
         self._exceptions = exceptions
 
