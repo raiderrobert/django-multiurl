@@ -1,0 +1,8 @@
+flake8>=2.1.0
+tox>=1.7.0
+coverage>=4.5.1
+pytest>=3.6.3
+pytest-cov>=2.5.1
+pytest-django>=3.3.3
+pytest-html>=1.19.0
+

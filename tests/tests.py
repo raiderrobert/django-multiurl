@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 import unittest
 
-from django.conf import settings
 from django.conf.urls import url
 
 from django.http import HttpResponse
@@ -101,8 +100,3 @@ def place(request, name):
 
 def thing(request, name):
     return HttpResponse("Thing: " + name.title())
-
-
-if __name__ == '__main__':
-    settings.configure()
-    unittest.main()

@@ -10,6 +10,7 @@ setup(
     download_url='https://github.com/raiderrobert/django-multiurl/tarball/v1.2.0',
     author='Jacob Kaplan-Moss and Robert Roskam',
     author_email='raiderrobert@gmail.com',
+    packages=find_packages(),
     install_requires=['django>=1.11'],
     keywords='django urls',
     classifiers=[

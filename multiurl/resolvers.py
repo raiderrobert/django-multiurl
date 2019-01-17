@@ -13,15 +13,6 @@ except ImportError:
         return pattern
 
 
-class ContinueResolving(Exception):
-    pass
-
-
-def multiurl(*urls, **kwargs):
-    exceptions = kwargs.get('catch', (ContinueResolving,))
-    return MultiRegexURLResolver(urls, exceptions)
-
-
 class MultiRegexURLResolver(urlresolvers.URLResolver):
     def __init__(self, urls, exceptions):
         super(MultiRegexURLResolver, self).__init__(RegexPattern(''), None)
