@@ -7,6 +7,7 @@ python:
   - '3.5'
   - '3.6'
   - '3.7'
+  - 'nightly'
   - 'pypy3'
 
 env:
@@ -17,14 +18,12 @@ env:
 
 matrix:
   exclude:
+    - python: '3.5'
+      env: DJANGO_VERSION=master
     - python: '3.4'
       env: DJANGO_VERSION=master
     - python: '3.4'
       env: DJANGO_VERSION=2.1.x
-  include:
-    - python: 3.7
-      dist: xenial
-      sudo: true
 
 install:
   - pip install tox coveralls
