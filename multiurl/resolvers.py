@@ -15,7 +15,7 @@ except ImportError:
 
 class MultiRegexURLResolver(urlresolvers.URLResolver):
     def __init__(self, urls, exceptions):
-        super(MultiRegexURLResolver, self).__init__(RegexPattern(''), None)
+        super(MultiRegexURLResolver, self).__init__(RegexPattern(""), None)
         self._urls = urls
         self._exceptions = exceptions
 
@@ -36,13 +36,15 @@ class MultiRegexURLResolver(urlresolvers.URLResolver):
             if sub_match:
                 # Here's the part that's different: instead of returning the
                 # first match, build up a list of all matches.
-                rm = urlresolvers.ResolverMatch(sub_match.func, sub_match.args, sub_match.kwargs, sub_match.url_name)
+                rm = urlresolvers.ResolverMatch(
+                    sub_match.func, sub_match.args, sub_match.kwargs, sub_match.url_name
+                )
                 matched.append(rm)
                 patterns_matched.append([pattern])
             tried.append([pattern])
         if matched:
             return MultiResolverMatch(matched, self._exceptions, patterns_matched, path)
-        raise urlresolvers.Resolver404({'tried': tried, 'path': path})
+        raise urlresolvers.Resolver404({"tried": tried, "path": path})
 
 
 class MultiResolverMatch(object):
@@ -68,6 +70,9 @@ class MultiResolverMatch(object):
                     return match.func(request, *match.args, **match.kwargs)
                 except self.exceptions:
                     continue
-            raise urlresolvers.Resolver404({'tried': self.patterns_matched, 'path': self.path})
+            raise urlresolvers.Resolver404(
+                {"tried": self.patterns_matched, "path": self.path}
+            )
+
         multiview.multi_resolver_match = self
         return multiview

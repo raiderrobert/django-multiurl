@@ -6,8 +6,5 @@ class ContinueResolving(Exception):
 
 
 def multiurl(*urls, **kwargs):
-    exceptions = kwargs.get('catch', (ContinueResolving,))
+    exceptions = kwargs.get("catch", (ContinueResolving,))
     return MultiRegexURLResolver(urls, exceptions)
-
-
-
