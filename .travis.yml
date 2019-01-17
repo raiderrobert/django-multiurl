@@ -1,21 +1,36 @@
 language: python
 
+sudo: false
+
 python:
-    - "2.7"
-    - "3.5"
-    - "3.6"
+  - '3.4'
+  - '3.5'
+  - '3.6'
+  - '3.7'
+  - 'pypy3'
+
+env:
+  - DJANGO_VERSION=master
+  - DJANGO_VERSION=2.1.x
+  - DJANGO_VERSION=2.0.x
+  - DJANGO_VERSION=1.11.x
 
 matrix:
+  exclude:
+    - python: '3.4'
+      env: DJANGO_VERSION=master
+    - python: '3.4'
+      env: DJANGO_VERSION=2.1.x
   include:
     - python: 3.7
       dist: xenial
       sudo: true
 
 install:
-  - pip install tox-travis python-coveralls
+  - pip install tox coveralls
 
 script:
-  - tox
+  - tox -e "$TRAVIS_PYTHON_VERSION-$DJANGO_VERSION"
 
 after_success:
-    coveralls
+  - coveralls
