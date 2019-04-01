@@ -4,6 +4,7 @@ import unittest
 
 from django.conf import settings
 from django.conf.urls import url
+from django.test.client import RequestFactory
 
 from django.http import HttpResponse
 
@@ -41,25 +42,27 @@ class MultiviewTests(unittest.TestCase):
             )
         ])
 
+        self.request = RequestFactory()
+
     def test_resolve_match_first(self):
         m = self.patterns_catchall.resolve('/jane/')
-        response = m.func(request=None, *m.args, **m.kwargs)
+        response = m.func(request=self.request, *m.args, **m.kwargs)
         self.assertEqual(response.content, b"Person: Jane Doe")
 
     def test_resolve_match_middle(self):
         m = self.patterns_catchall.resolve('/sf/')
-        response = m.func(request=None, *m.args, **m.kwargs)
+        response = m.func(request=self.request, *m.args, **m.kwargs)
         self.assertEqual(response.content, b"Place: San Francisco")
 
     def test_resolve_match_last(self):
         m = self.patterns_catchall.resolve('/bacon/')
-        response = m.func(request=None, *m.args, **m.kwargs)
+        response = m.func(request=self.request, *m.args, **m.kwargs)
         self.assertEqual(response.content, b"Thing: Bacon")
 
     def test_resolve_match_faillthrough(self):
         m = self.patterns_no_fallthrough.resolve('/bacon/')
         with self.assertRaises(urlresolvers.Resolver404):
-            m.func(request=None, *m.args, **m.kwargs)
+            m.func(request=self.request, *m.args, **m.kwargs)
 
     def test_no_match(self):
         with self.assertRaises(urlresolvers.Resolver404):
