@@ -1,8 +1,10 @@
 language: python
 
 python:
+    - "3.5"
     - "3.6"
     - "3.7"
+    - "master"
 
 install:
   - pip install tox-travis python-coveralls
