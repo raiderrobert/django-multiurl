@@ -75,6 +75,8 @@ class MultiResolverMatch(object):
         def multiview(request):
             for i, match in enumerate(self.matches):
                 try:
+                    # Update ResolverMatch in request for later usage
+                    request.resolver_match = match
                     return match.func(request, *match.args, **match.kwargs)
                 except self.exceptions:
                     continue
