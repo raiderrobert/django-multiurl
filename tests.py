@@ -4,10 +4,11 @@ import unittest
 
 from django.conf import settings
 from django.conf.urls import url
-
+from django.conf.urls.i18n import i18n_patterns
 from django.http import HttpResponse
+from django.urls import path
 
-from multiurl import multiurl, ContinueResolving
+from multiurl import ContinueResolving, multiurl
 
 try:
     from django import urls as urlresolvers
@@ -33,6 +34,14 @@ class MultiviewTests(unittest.TestCase):
             )
         ])
 
+        self.patterns_pathall = urlresolvers.URLResolver(RegexPattern(r'^/'), i18n_patterns(
+            multiurl(
+                path('<str:name>/', brand, name='brand'),
+                path('<str:name>/', model, name='model'),
+            ),
+        ))
+
+
         # Patterns with no "catch all" - last view could still raise ContinueResolving.
         self.patterns_no_fallthrough = urlresolvers.URLResolver(RegexPattern(r'^/'), [
             multiurl(
@@ -55,6 +64,16 @@ class MultiviewTests(unittest.TestCase):
         m = self.patterns_catchall.resolve('/bacon/')
         response = m.func(request=None, *m.args, **m.kwargs)
         self.assertEqual(response.content, b"Thing: Bacon")
+
+    def test_resolve_match_path_brand(self):
+        m = self.patterns_pathall.resolve('/en-us/bmw/')
+        response = m.func(request=None, *m.args, **m.kwargs)
+        self.assertEqual(response.content, b"Brand: BMW Series")
+
+    def test_resolve_match_path_model(self):
+        m = self.patterns_pathall.resolve('/en-us/x5/')
+        response = m.func(request=None, *m.args, **m.kwargs)
+        self.assertEqual(response.content, b"Model: X5 2019")
 
     def test_resolve_match_faillthrough(self):
         m = self.patterns_no_fallthrough.resolve('/bacon/')
@@ -101,6 +120,24 @@ def place(request, name):
 
 def thing(request, name):
     return HttpResponse("Thing: " + name.title())
+
+
+def brand(request, name):
+    brand = {
+        'bmw': 'BMW Series',
+    }
+    if name in brand:
+        return HttpResponse("Brand: " + brand[name])
+    raise ContinueResolving
+
+
+def model(request, name):
+    model = {
+        'x5': 'X5 2019',
+    }
+    if name in model:
+        return HttpResponse("Model: " + model[name])
+    raise ContinueResolving
 
 
 if __name__ == '__main__':
