@@ -1,14 +1,14 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
     name='django-multiurl',
     py_modules=['multiurl'],
-    version='1.3.0',
+    version='1.4.0',
     description='Allow multiple views to match the same URL.',
     long_description=open("README.rst").read(),
     license='BSD',
     url='https://github.com/raiderrobert/django-multiurl',
-    download_url='https://github.com/raiderrobert/django-multiurl/tarball/v1.3.0',
+    download_url='https://github.com/raiderrobert/django-multiurl/tarball/v1.4.0',
     author='Jacob Kaplan-Moss and Robert Roskam',
     author_email='raiderrobert@gmail.com',
     install_requires=['django>=1.11'],
