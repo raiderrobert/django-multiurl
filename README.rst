@@ -1,6 +1,5 @@
-##########
 django-multiurl
-##########
+===============
 .. image:: https://travis-ci.org/raiderrobert/django-multiurl.svg?branch=master
     :target: http://travis-ci.org/raiderrobert/django-multiurl
 .. image:: https://coveralls.io/repos/github/raiderrobert/django-multiurl/badge.svg?branch=master

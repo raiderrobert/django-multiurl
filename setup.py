@@ -6,6 +6,7 @@ setup(
     version='1.4.0',
     description='Allow multiple views to match the same URL.',
     long_description=open("README.rst").read(),
+    long_description_content_type='text/x-rst',
     license='BSD',
     url='https://github.com/raiderrobert/django-multiurl',
     download_url='https://github.com/raiderrobert/django-multiurl/tarball/v1.4.0',
