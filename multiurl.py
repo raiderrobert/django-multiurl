@@ -55,13 +55,16 @@ class MultiRegexURLResolver(urlresolvers.URLResolver):
 
 
 class MultiResolverMatch(object):
-    def __init__(self, matches, exceptions, patterns_matched, path, route='', tried=None):
+    def __init__(self, matches, exceptions, patterns_matched, path, route='', tried=None, captured_kwargs=None,
+                 extra_kwargs=None):
         self.matches = matches
         self.exceptions = exceptions
         self.patterns_matched = patterns_matched
         self.path = path
         self.route = route
         self.tried = tried
+        self.captured_kwargs = captured_kwargs if captured_kwargs is not None else {}
+        self.extra_kwargs = extra_kwargs if extra_kwargs is not None else {}
 
         # Attributes to emulate ResolverMatch
         self.kwargs = {}
