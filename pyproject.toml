@@ -7,7 +7,7 @@ name = "django-multiurl"
 dynamic = ["version"]
 description = "Allow multiple views to match the same URL."
 readme = "README.md"
-license = "BSD"
+license = "BSD-3-Clause"
 authors = [
     { name = "Robert Roskam", email = "raiderrobert@gmail.com" },
 ]
@@ -36,7 +36,7 @@ dependencies = [
 Homepage = "https://github.com/raiderrobert/django-multiurl"
 
 [tool.hatch.version]
-path = "django_multiurl/__about__.py"
+path = "__about__.py"
 
 [tool.hatch.build.targets.sdist]
 include = [
