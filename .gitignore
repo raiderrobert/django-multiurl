@@ -20,3 +20,7 @@ _build
 # Unit test / coverage reports
 .coverage
 .tox
+# tooling
+.venv/
+.ruff_cache/
+.pytest_cache/

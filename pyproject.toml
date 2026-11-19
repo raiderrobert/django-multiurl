@@ -8,6 +8,8 @@ dynamic = ["version"]
 description = "Allow multiple views to match the same URL."
 readme = "README.md"
 license = "BSD-3-Clause"
+license-files = ["LICENSE.txt"]
+requires-python = ">=3.10"
 authors = [
     { name = "Robert Roskam", email = "raiderrobert@gmail.com" },
 ]
@@ -16,29 +18,58 @@ keywords = [
     "urls",
 ]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Environment :: Web Environment",
     "Framework :: Django",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.2",
+    "Framework :: Django :: 6.0",
+    "Framework :: Django :: 6.1",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: BSD License",
     "Natural Language :: English",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 2.7",
-    "Programming Language :: Python :: 3.4",
-    "Programming Language :: Python :: 3.5",
-    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "django>=1.11",
+    "django>=4.2",
 ]
 
 [project.urls]
 Homepage = "https://github.com/raiderrobert/django-multiurl"
+Issues = "https://github.com/raiderrobert/django-multiurl/issues"
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "ruff>=0.8",
+    "ty",
+]
 
 [tool.hatch.version]
 path = "__about__.py"
 
+[tool.hatch.build.targets.wheel]
+only-include = ["multiurl.py"]
+
 [tool.hatch.build.targets.sdist]
 include = [
-    "/django_multiurl",
+    "multiurl.py",
+    "tests.py",
+    "conftest.py",
+    "__about__.py",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests.py"]
+
+[tool.ruff]
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "DJ"]
