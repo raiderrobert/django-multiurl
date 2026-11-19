@@ -9,7 +9,10 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  # Superseded PR runs are cancelled. Each push to master gets its own group
+  # (keyed by SHA), so back-to-back merges never leave a cancelled run behind
+  # (a cancelled run shows as "failing" on the badge).
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
   cancel-in-progress: true
 
 jobs:
