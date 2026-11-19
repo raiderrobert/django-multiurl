@@ -1,3 +1,4 @@
+from asgiref.sync import iscoroutinefunction, sync_to_async
 from django.urls import Resolver404, ResolverMatch, URLResolver
 from django.urls.resolvers import RegexPattern
 from django.utils.functional import cached_property
@@ -77,21 +78,53 @@ class MultiResolverMatch:
         self.app_name = None
         self.namespaces = []
 
+    def _view_arguments(self, match, args, kwargs):
+        # args/kwargs come from enclosing patterns, e.g. the <section> in
+        # path("<str:section>/", include([multiurl(...)])). Same rule as
+        # Django's URLResolver: if there are any kwargs, the outer positional
+        # args are dropped, but the sub-pattern's own args are kept.
+        view_kwargs = {**kwargs, **match.kwargs}
+        view_args = tuple(match.args) if view_kwargs else args + tuple(match.args)
+        return view_args, view_kwargs
+
+    def _not_found(self):
+        return Resolver404({"tried": self.patterns_matched, "path": self.path})
+
     @property
     def func(self):
-        def multiview(request, *args, **kwargs):
-            # args/kwargs come from enclosing patterns, e.g. the <section> in
-            # path("<str:section>/", include([multiurl(...)])).
-            for match in self.matches:
-                view_kwargs = {**kwargs, **match.kwargs}
-                # Same rule as Django: if there are any named groups, ignore
-                # positional ones.
-                view_args = () if view_kwargs else args + tuple(match.args)
-                try:
-                    return match.func(request, *view_args, **view_kwargs)
-                except self.exceptions:
-                    continue
-            raise Resolver404({"tried": self.patterns_matched, "path": self.path})
+        funcs = [match.func for match in self.matches]
 
-        multiview.multi_resolver_match = self  # ty: ignore[missing-attribute]
+        if any(iscoroutinefunction(f) for f in funcs):
+
+            async def multiview(request, *args, **kwargs):
+                for match in self.matches:
+                    view_args, view_kwargs = self._view_arguments(match, args, kwargs)
+                    view = match.func
+                    if not iscoroutinefunction(view):
+                        view = sync_to_async(view)
+                    try:
+                        return await view(request, *view_args, **view_kwargs)
+                    except self.exceptions:
+                        continue
+                raise self._not_found()
+
+        else:
+
+            def multiview(request, *args, **kwargs):
+                for match in self.matches:
+                    view_args, view_kwargs = self._view_arguments(match, args, kwargs)
+                    try:
+                        return match.func(request, *view_args, **view_kwargs)
+                    except self.exceptions:
+                        continue
+                raise self._not_found()
+
+        attrs = {"multi_resolver_match": self}
+        # Middleware only sees multiview, so carry over view-decorator flags,
+        # but only where every sub-view agrees (otherwise keep the safe default).
+        if all(getattr(f, "csrf_exempt", False) for f in funcs):
+            attrs["csrf_exempt"] = True
+        if all(getattr(f, "login_required", True) is False for f in funcs):
+            attrs["login_required"] = False
+        multiview.__dict__.update(attrs)
         return multiview

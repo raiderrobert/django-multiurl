@@ -82,6 +82,12 @@ A few notes to round things out:
 - `path()` and `re_path()` both work, as does nesting `multiurl` inside
   `include()` (namespaces and captured prefix arguments are passed through).
 
+- Async views work, and can be mixed with sync views in one `multiurl`.
+
+- `@csrf_exempt` and `@login_not_required` are honored only when every view
+  in the `multiurl` has them, since middleware runs before it's known which
+  view will answer.
+
 - Reverse URL resolution just works as expected. Name your sub-URLs and then
   reverse your heart out.
 

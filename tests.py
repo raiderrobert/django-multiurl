@@ -2,7 +2,7 @@ import unittest
 
 from django.conf.urls.i18n import i18n_patterns
 from django.http import Http404, HttpResponse
-from django.test import SimpleTestCase
+from django.test import Client, SimpleTestCase, override_settings
 from django.urls import (
     NoReverseMatch,
     Resolver404,
@@ -15,6 +15,7 @@ from django.urls import (
 )
 from django.urls.resolvers import RegexPattern
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 
 from multiurl import ContinueResolving, multiurl
 
@@ -142,6 +143,45 @@ class RequestDispatchTests(SimpleTestCase):
     def test_resolver_match_route(self):
         self.assertEqual(resolve("/top/jane/").route, "top/<str:name>/")
 
+    def test_inner_positional_args_kept_with_extra_kwargs(self):
+        # Matches plain Django: an extra-kwargs dict doesn't drop the
+        # pattern's own unnamed groups.
+        response = self.client.get("/d/i/")
+        self.assertEqual(response.content, b"args=('i',) kwargs={'d': 1}")
+
+    def test_inner_positional_args_kept_with_outer_named_prefix(self):
+        response = self.client.get("/p/sec/i/")
+        self.assertEqual(response.content, b"args=('i',) kwargs={'section': 'sec'}")
+
+    def test_async_views(self):
+        self.assertEqual(self.client.get("/a/x/").content, b"Async B: x")
+        self.assertEqual(self.client.get("/a/jane/").content, b"Async A: jane")
+
+    async def test_async_views_async_client(self):
+        response = await self.async_client.get("/a/x/")
+        self.assertEqual(response.content, b"Async B: x")
+
+    def test_mixed_sync_and_async_views(self):
+        self.assertEqual(self.client.get("/m/x/").content, b"Async B: x")
+        self.assertEqual(self.client.get("/m/jane/").content, b"Person: Jane Doe")
+
+    def test_async_views_all_continue_is_404(self):
+        self.assertEqual(self.client.get("/an/zzz/").status_code, 404)
+
+    @override_settings(MIDDLEWARE=["django.middleware.csrf.CsrfViewMiddleware"])
+    def test_csrf_exempt_when_all_views_exempt(self):
+        client = Client(enforce_csrf_checks=True)
+        self.assertEqual(client.post("/csrf/x/").status_code, 200)
+
+    @override_settings(MIDDLEWARE=["django.middleware.csrf.CsrfViewMiddleware"])
+    def test_csrf_enforced_when_any_view_not_exempt(self):
+        client = Client(enforce_csrf_checks=True)
+        self.assertEqual(client.post("/csrf-mixed/x/").status_code, 403)
+
+    def test_login_not_required_when_all_views_opt_out(self):
+        self.assertIs(resolve("/public/x/").func.login_required, False)
+        self.assertTrue(getattr(resolve("/top/x/").func, "login_required", True))
+
 
 #
 # Some "views" to test against.
@@ -209,6 +249,42 @@ class WidgetView(View):
         return HttpResponse(f"CBV: {name}")
 
 
+def echo_args(request, *args, **kwargs):
+    return HttpResponse(f"args={args!r} kwargs={kwargs!r}")
+
+
+async def async_a(request, name):
+    if name == "jane":
+        return HttpResponse(f"Async A: {name}")
+    raise ContinueResolving
+
+
+async def async_b(request, name):
+    return HttpResponse(f"Async B: {name}")
+
+
+async def async_never(request, name):
+    raise ContinueResolving
+
+
+@csrf_exempt
+def exempt_a(request, name):
+    raise ContinueResolving
+
+
+@csrf_exempt
+def exempt_b(request, name):
+    return HttpResponse("exempt")
+
+
+def public_view(request, name):
+    return HttpResponse("public")
+
+
+# What @login_not_required sets (Django 5.1+).
+public_view.login_required = False  # ty: ignore[missing-attribute]
+
+
 # ROOT_URLCONF for RequestDispatchTests (see conftest.py).
 urlpatterns = [
     path(
@@ -267,6 +343,45 @@ urlpatterns = [
                 multiurl(
                     path("<str:name>/", person),
                     path("<str:name>/", WidgetView.as_view()),
+                )
+            ]
+        ),
+    ),
+    path("d/", include([multiurl(re_path(r"^(\w+)/$", echo_args, {"d": 1}))])),
+    path(
+        "p/<str:section>/",
+        include([multiurl(re_path(r"^(\w+)/$", echo_args))]),
+    ),
+    path(
+        "a/",
+        include([multiurl(path("<str:name>/", async_a), path("<str:name>/", async_b))]),
+    ),
+    path(
+        "an/",
+        include(
+            [multiurl(path("<str:name>/", async_a), path("<str:name>/", async_never))]
+        ),
+    ),
+    path(
+        "m/",
+        include([multiurl(path("<str:name>/", person), path("<str:name>/", async_b))]),
+    ),
+    path(
+        "csrf/",
+        include(
+            [multiurl(path("<str:name>/", exempt_a), path("<str:name>/", exempt_b))]
+        ),
+    ),
+    path(
+        "csrf-mixed/",
+        include([multiurl(path("<str:name>/", exempt_a), path("<str:name>/", thing))]),
+    ),
+    path(
+        "public/",
+        include(
+            [
+                multiurl(
+                    path("<str:name>/", public_view), path("<str:name>/", public_view)
                 )
             ]
         ),
