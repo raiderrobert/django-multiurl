@@ -3,10 +3,9 @@ from __future__ import unicode_literals
 import unittest
 
 from django.conf import settings
-from django.conf.urls import url
 from django.conf.urls.i18n import i18n_patterns
 from django.http import HttpResponse
-from django.urls import path
+from django.urls import path, re_path
 
 from multiurl import ContinueResolving, multiurl
 
@@ -28,9 +27,9 @@ class MultiviewTests(unittest.TestCase):
         # Patterns with a "catch all" view (thing) at the end.
         self.patterns_catchall = urlresolvers.URLResolver(RegexPattern(r'^/'), [
             multiurl(
-                url(r'^(\w+)/$', person, name='person'),
-                url(r'^(\w+)/$', place, name='place'),
-                url(r'^(\w+)/$', thing, name='thing'),
+                re_path(r'^(\w+)/$', person, name='person'),
+                re_path(r'^(\w+)/$', place, name='place'),
+                re_path(r'^(\w+)/$', thing, name='thing'),
             )
         ])
 
@@ -45,8 +44,8 @@ class MultiviewTests(unittest.TestCase):
         # Patterns with no "catch all" - last view could still raise ContinueResolving.
         self.patterns_no_fallthrough = urlresolvers.URLResolver(RegexPattern(r'^/'), [
             multiurl(
-                url(r'^(\w+)/$', person, name='person'),
-                url(r'^(\w+)/$', place, name='place'),
+                re_path(r'^(\w+)/$', person, name='person'),
+                re_path(r'^(\w+)/$', place, name='place'),
             )
         ])
 
