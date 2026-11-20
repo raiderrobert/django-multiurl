@@ -109,3 +109,8 @@ uv run pytest                                      # run the tests
 uv run --with "django==5.2.*" pytest               # against a specific Django
 uv run ruff check . && uv run ruff format --check . && uv run ty check
 ```
+
+PR titles must follow [Conventional Commits](https://www.conventionalcommits.org/)
+(`fix: …`, `feat: …`, `feat!: …` for breaking changes): PRs are squash-merged
+and [release-please](https://github.com/googleapis/release-please) uses the
+titles to pick the next version and write the changelog.

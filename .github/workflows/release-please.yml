@@ -1,0 +1,28 @@
+name: Release Please
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v5
+        id: release-please
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+      # Releases created with GITHUB_TOKEN don't trigger other workflows,
+      # so start the publish workflow explicitly.
+      - name: Dispatch release build
+        if: ${{ steps.release-please.outputs.releases_created == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run release.yml --repo ${{ github.repository }} -f tag=${{ steps.release-please.outputs.tag_name }}
