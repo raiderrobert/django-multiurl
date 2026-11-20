@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "django-multiurl"
-dynamic = ["version"]
+version = "1.5.0"
 description = "Allow multiple views to match the same URL."
 readme = "README.md"
 license = "BSD-3-Clause"
@@ -51,9 +51,6 @@ dev = [
     "ty",
 ]
 
-[tool.hatch.version]
-path = "__about__.py"
-
 [tool.hatch.build.targets.wheel]
 only-include = ["multiurl.py"]
 
@@ -62,7 +59,6 @@ include = [
     "multiurl.py",
     "tests.py",
     "conftest.py",
-    "__about__.py",
 ]
 
 [tool.pytest.ini_options]
